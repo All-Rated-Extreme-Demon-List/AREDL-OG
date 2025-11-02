@@ -1,4 +1,5 @@
-import type { ProfileOGData } from '@/types/og';
+import type { PackOGData, ProfileOGData } from '@/types/og';
+import { Pack, PackTier } from '@/types/packs';
 import type { Profile } from '@/types/profiles';
 import { send } from '@/utils/api';
 
@@ -31,4 +32,30 @@ export async function getUserProfile(
         createdCount,
         packsCount,
     } as ProfileOGData;
+}
+
+export async function getPack(
+    env: CloudflareBindings,
+    list: 'classic' | 'platformer',
+    packId: string,
+): Promise<Partial<PackOGData>> {
+    const packtiers = await send<PackTier[]>(
+        env,
+        `/${list == 'classic' ? 'aredl' : 'arepl'}/pack-tiers`,
+    );
+
+    const { pack, tier } = (packtiers
+        .map((tier) => ({
+            pack: tier.packs.find((p) => p.id === packId),
+            tier,
+        }))
+        .find(({ pack }) => pack !== undefined) as {
+        pack?: Pack;
+        tier?: PackTier;
+    }) || { pack: undefined, tier: undefined };
+
+    return {
+        pack,
+        tier,
+    };
 }
