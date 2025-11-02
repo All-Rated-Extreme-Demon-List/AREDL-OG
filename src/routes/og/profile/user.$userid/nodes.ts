@@ -7,7 +7,7 @@ import {
 import { fetchAssets, getAvatarUrl, getFullLevelThumbnail } from '@/utils';
 import { Profile } from '@/types/profiles';
 import { ProfileOGData } from '@/types/og';
-import { TopCompletedLevelsNode } from '@/routes/og/profile/nodes';
+import { ListOfLevelsNode } from '@/routes/og/nodes';
 import { iconNode, IconNodeProps } from '@/routes/og/nodes';
 
 export const UserInfoNode = async (profile: Profile) => {
@@ -183,8 +183,9 @@ export const userProfileNode = async ({
                         },
                         children: badges.map((badge) => iconNode(badge)),
                     }),
-                    await TopCompletedLevelsNode(
+                    await ListOfLevelsNode(
                         topCompletedLevels.slice(0, 4),
+                        'HARDEST COMPLETIONS',
                     ),
                 ],
             }),

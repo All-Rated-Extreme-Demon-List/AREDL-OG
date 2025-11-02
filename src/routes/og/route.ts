@@ -5,6 +5,7 @@ import { initSync, Renderer } from '@takumi-rs/wasm';
 import { env } from 'cloudflare:workers';
 import { createMiddleware } from 'hono/factory';
 import module from '@takumi-rs/wasm/takumi_wasm_bg.wasm';
+import { packRoutes } from '@/routes/og/packs.$packid/route';
 
 export async function ogRoutes() {
     const app = new Hono<HonoApp>();
@@ -12,6 +13,7 @@ export async function ogRoutes() {
     app.use(rendererMiddleware);
 
     app.route('/profile', profileRoutes());
+    app.route('/packs', packRoutes());
     return app;
 }
 

@@ -1,5 +1,6 @@
 import { container, image, rgba, text } from '@takumi-rs/helpers';
 import { BaseLevel } from '@/types/levels';
+import { fetchAssets, getCardLevelThumbnail } from '@/utils';
 
 export type IconNodeProps = {
     iconPath?: string;
@@ -90,3 +91,40 @@ export const levelNode = ({ level, thumbnailPath }: LevelNodeProps) =>
             }),
         ],
     });
+
+export const ListOfLevelsNode = async (levels: BaseLevel[], label: string) => {
+    const levelsThumbnails = await fetchAssets(
+        levels.map((level) => ({
+            path: getCardLevelThumbnail(level.level_id),
+            external: true,
+        })),
+    );
+    return container({
+        style: {
+            flexDirection: 'column',
+            gap: 8,
+        },
+        children: [
+            container({
+                style: {
+                    flexDirection: 'column',
+                },
+                children: [
+                    text(label, {
+                        fontSize: 18,
+                        color: rgba(255, 255, 255, 0.7),
+                    }),
+                    container({
+                        style: {
+                            padding: 1,
+                            backgroundColor: rgba(255, 255, 255, 0.5),
+                        },
+                    }),
+                ],
+            }),
+            ...levels.map((level, index) =>
+                levelNode({ level, thumbnailPath: levelsThumbnails[index] }),
+            ),
+        ],
+    });
+};
