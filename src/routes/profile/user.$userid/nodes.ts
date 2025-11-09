@@ -7,8 +7,8 @@ import {
 import { fetchAssets, getAvatarUrl, getFullLevelThumbnail } from '@/utils';
 import { Profile } from '@/types/profiles';
 import { ProfileOGData } from '@/types/og';
-import { ListOfLevelsNode } from '@/routes/og/nodes';
-import { iconNode, IconNodeProps } from '@/routes/og/nodes';
+import { ListOfLevelsNode } from '@/routes/nodes';
+import { iconNode, IconNodeProps } from '@/routes/nodes';
 
 export const UserInfoNode = async (profile: Profile) => {
     const clan = profile?.clan ? `[${profile.clan.tag}] ` : '';

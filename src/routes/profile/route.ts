@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
-import { userProfileRoute } from '@/routes/og/profile/user.$userid/route';
-import { HonoOGApp } from '@/routes/og/route';
+import { userProfileRoute } from '@/routes/profile/user.$userid/route';
+import { HonoOGApp } from '@/routes/root';
 
 export function profileRoutes() {
     const app = new Hono<HonoOGApp>();
