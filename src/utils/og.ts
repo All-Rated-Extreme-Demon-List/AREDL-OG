@@ -34,6 +34,7 @@ export function ogHandler(
                 'Content-Type': 'image/webp',
                 'Cache-Control': cacheControl,
                 'Content-Length': String(rendered.byteLength),
+                Vary: 'Origin',
             });
 
             if (context.req.method === 'HEAD') {

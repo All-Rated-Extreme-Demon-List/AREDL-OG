@@ -5,6 +5,7 @@ import { env } from 'cloudflare:workers';
 import module from '@takumi-rs/wasm/takumi_wasm_bg.wasm';
 import { profileRoutes } from '@/routes/profile/route';
 import { packRoutes } from '@/routes/packs.$packid/route';
+import { cors } from 'hono/cors';
 
 export type HonoApp = { Bindings: CloudflareBindings };
 export type HonoOGApp = HonoApp & {
@@ -43,6 +44,16 @@ const rendererMiddleware = createMiddleware<HonoOGApp>(async (c, next) => {
 const app = new Hono<HonoApp>();
 
 app.use(rendererMiddleware);
+app.use(
+    cors({
+        origin: (origin) => origin ?? '*',
+        allowMethods: ['GET', 'HEAD', 'OPTIONS'],
+        allowHeaders: ['*'],
+        exposeHeaders: ['Content-Length', 'Content-Type'],
+        maxAge: 3600,
+        credentials: false,
+    }),
+);
 
 app.route('/profile', profileRoutes());
 app.route('/packs', packRoutes());
