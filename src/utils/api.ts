@@ -16,16 +16,17 @@ export async function send<T = unknown>(
         }
     }
     const response = await fetch(requestURL.toString());
+
+    if (!response.ok) {
+        throw response;
+    }
+
     const contentType = response.headers.get('content-type') || '';
     const data = (
         contentType.includes('application/json')
             ? await response.json()
             : await response.text()
     ) as T & { message?: string };
-
-    if (!response.ok) {
-        throw new Error(data?.message || response.statusText);
-    }
 
     return data as T;
 }

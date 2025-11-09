@@ -10,7 +10,7 @@ export function userProfileRoute() {
     app.on(
         ['GET', 'HEAD'],
         '/:userId',
-        ogHandler(async (context, format, width, height) => {
+        ogHandler(async (context) => {
             const userId = context.req.param('userId');
             const list =
                 (context.req.query('list') as 'classic' | 'platformer') ||
@@ -22,14 +22,7 @@ export function userProfileRoute() {
                 userId,
             );
 
-            return context.var.renderer.render(
-                await userProfileNode(profileOGData),
-                {
-                    width,
-                    height,
-                    format,
-                },
-            );
+            return await userProfileNode(profileOGData);
         }),
     );
 

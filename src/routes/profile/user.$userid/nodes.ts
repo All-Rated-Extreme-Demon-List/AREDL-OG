@@ -17,9 +17,10 @@ export const UserInfoNode = async (profile: Profile) => {
     const description =
         profile?.description || "This user hasn't provided a description yet.";
 
-    const countryInfo = profile?.country
-        ? fromNumeric(profile?.country)
-        : undefined;
+    const countryInfo =
+        profile?.country && profile?.country != 0
+            ? fromNumeric(profile?.country)
+            : undefined;
 
     const [avatarDataUrl, countryFlagDataUrl] = await fetchAssets([
         { path: getAvatarUrl(profile), external: true },
@@ -29,6 +30,7 @@ export const UserInfoNode = async (profile: Profile) => {
                 : null,
         },
     ]);
+
     return container({
         style: {
             flexDirection: 'row',
@@ -64,26 +66,28 @@ export const UserInfoNode = async (profile: Profile) => {
                             alignItems: 'center',
                             gap: 16,
                         },
-                        children: [
-                            image({
-                                src: countryFlagDataUrl ?? '',
-                                width: 43,
-                                height: 32,
-                                style: {
-                                    width: 43,
-                                    height: 32,
-                                    borderRadius: 4,
-                                },
-                            }),
-                            text(
-                                countryInfo
-                                    ? `${getCountryName(countryInfo)} ${profile.rank.country_rank ? `(#${profile.rank.country_rank})` : ''}`
-                                    : 'Unknown Country',
-                                {
-                                    fontSize: 24,
-                                },
-                            ),
-                        ],
+                        children: countryInfo
+                            ? [
+                                  image({
+                                      src: countryFlagDataUrl ?? '',
+                                      width: 43,
+                                      height: 32,
+                                      style: {
+                                          width: 43,
+                                          height: 32,
+                                          borderRadius: 4,
+                                      },
+                                  }),
+                                  text(
+                                      countryInfo
+                                          ? `${getCountryName(countryInfo)} ${profile.rank.country_rank ? `(#${profile.rank.country_rank})` : ''}`
+                                          : 'Unknown Country',
+                                      {
+                                          fontSize: 24,
+                                      },
+                                  ),
+                              ]
+                            : [],
                     }),
                     text(description, {
                         fontSize: 18,

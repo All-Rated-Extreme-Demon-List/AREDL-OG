@@ -52,7 +52,6 @@ export const levelNode = ({ level, thumbnailPath }: LevelNodeProps) =>
             width: 500,
             height: 64,
             borderRadius: 16,
-            overflow: 'hidden',
             paddingLeft: 16,
         },
         children: [

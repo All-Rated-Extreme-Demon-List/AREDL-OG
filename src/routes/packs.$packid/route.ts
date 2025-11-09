@@ -10,7 +10,7 @@ export function packRoutes() {
     app.on(
         ['GET', 'HEAD'],
         '/:packId',
-        ogHandler(async (context, format, width, height) => {
+        ogHandler(async (context) => {
             const packId = context.req.param('packId');
             const list =
                 (context.req.query('list') as 'classic' | 'platformer') ||
@@ -18,17 +18,10 @@ export function packRoutes() {
 
             const { pack, tier } = await getPack(context.env, list, packId);
             if (!pack || !tier) {
-                return new Response('Pack not found', { status: 404 });
+                throw new Response('Pack not found', { status: 404 });
             }
 
-            return context.var.renderer.render(
-                await PackInfoNode({ pack, tier }),
-                {
-                    width,
-                    height,
-                    format,
-                },
-            );
+            return await PackInfoNode({ pack, tier });
         }),
     );
 
