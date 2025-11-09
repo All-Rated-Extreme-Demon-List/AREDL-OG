@@ -1,6 +1,6 @@
 import { container, text } from '@takumi-rs/helpers';
 import { PackOGData } from '@/types/og';
-import { ListOfLevelsNode } from '@/routes/og/nodes';
+import { ListOfLevelsNode } from '@/routes/nodes';
 
 export const PackInfoNode = async ({ pack, tier }: PackOGData) => {
     return container({
