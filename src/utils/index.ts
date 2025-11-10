@@ -1,10 +1,7 @@
-import type { User } from '@/types/users';
-import type { ClanMember } from '@/types/clans';
+import type { BaseUser } from '@/types/users';
 import { env } from 'cloudflare:workers';
 
-export const getAvatarUrl = (
-    user: Partial<User> | Partial<ClanMember> | null,
-) =>
+export const getAvatarUrl = (user: Partial<BaseUser> | null) =>
     user && user?.discord_avatar
         ? `https://cdn.discordapp.com/avatars/${user.discord_id}/${user.discord_avatar.replace('a_', '')}.webp`
         : null;

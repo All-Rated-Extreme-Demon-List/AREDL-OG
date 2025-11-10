@@ -5,28 +5,29 @@ import {
     getCountryName,
 } from '@/utils/countries';
 import { fetchAssets, getAvatarUrl, getFullLevelThumbnail } from '@/utils';
-import { Profile } from '@/types/profiles';
-import { ProfileOGData } from '@/types/og';
+import { ProfileOGData } from '@/types/profiles';
 import { ListOfLevelsNode } from '@/routes/nodes';
 import { iconNode, IconNodeProps } from '@/routes/nodes';
 
-export const UserInfoNode = async (profile: Profile) => {
-    const clan = profile?.clan ? `[${profile.clan.tag}] ` : '';
-    const name = profile?.global_name || profile?.username || 'Unknown User';
+export const UserInfoNode = async (profile: ProfileOGData) => {
+    const clan = profile?.clanTag ? `[${profile.clanTag}] ` : '';
+    const name =
+        profile?.user?.global_name || profile?.user?.username || 'Unknown User';
     const fullname = `${clan}${name}`;
     const description =
-        profile?.description || "This user hasn't provided a description yet.";
+        profile?.user?.description ||
+        "This user hasn't provided a description yet.";
 
     const countryInfo =
-        profile?.country && profile?.country != 0
-            ? fromNumeric(profile?.country)
+        profile?.user?.country && profile?.user?.country != 0
+            ? fromNumeric(profile?.user?.country)
             : undefined;
 
     const [avatarDataUrl, countryFlagDataUrl] = await fetchAssets([
-        { path: getAvatarUrl(profile), external: true },
+        { path: getAvatarUrl(profile?.user), external: true },
         {
-            path: profile?.country
-                ? getCountryFlagUrl(fromNumeric(profile?.country))
+            path: profile?.user?.country
+                ? getCountryFlagUrl(fromNumeric(profile?.user?.country))
                 : null,
         },
     ]);
@@ -80,7 +81,7 @@ export const UserInfoNode = async (profile: Profile) => {
                                   }),
                                   text(
                                       countryInfo
-                                          ? `${getCountryName(countryInfo)} ${profile.rank.country_rank ? `(#${profile.rank.country_rank})` : ''}`
+                                          ? `${getCountryName(countryInfo)} ${profile?.countryRank ? `(#${profile.countryRank})` : ''}`
                                           : 'Unknown Country',
                                       {
                                           fontSize: 24,
@@ -99,12 +100,7 @@ export const UserInfoNode = async (profile: Profile) => {
     });
 };
 
-export const userProfileNode = async ({
-    profile,
-    createdCount,
-    packsCount,
-    topCompletedLevels,
-}: ProfileOGData) => {
+export const userProfileNode = async (profile: ProfileOGData) => {
     const [
         backgroundDataUrl,
         iconGlobalRank,
@@ -114,8 +110,10 @@ export const userProfileNode = async ({
     ] = await fetchAssets([
         {
             path:
-                topCompletedLevels.length > 0
-                    ? getFullLevelThumbnail(topCompletedLevels[0].level_id)
+                profile.topCompletedLevels.length > 0
+                    ? getFullLevelThumbnail(
+                          profile.topCompletedLevels[0].level_id,
+                      )
                     : null,
             external: true,
         },
@@ -129,22 +127,24 @@ export const userProfileNode = async ({
         {
             iconPath: iconGlobalRank,
             title: 'GLOBAL RANK',
-            data: profile?.rank?.raw_rank ? `#${profile.rank.raw_rank}` : 'N/A',
+            data: profile?.globalRank ? `#${profile.globalRank}` : 'N/A',
         },
         {
             iconPath: iconExtremes,
             title: 'COMPLETED EXTREMES',
-            data: profile.rank.extremes ? String(profile.rank.extremes) : 'N/A',
+            data: profile?.completedExtremesCount
+                ? String(profile.completedExtremesCount)
+                : 'N/A',
         },
         {
             iconPath: iconPacks,
             title: 'COMPLETED PACKS',
-            data: packsCount ? String(packsCount) : 'N/A',
+            data: profile?.packsCount ? String(profile.packsCount) : 'N/A',
         },
         {
             iconPath: iconCreated,
             title: 'CREATED LEVELS',
-            data: createdCount ? String(createdCount) : 'N/A',
+            data: profile?.createdCount ? String(profile.createdCount) : 'N/A',
         },
     ];
 
@@ -188,7 +188,7 @@ export const userProfileNode = async ({
                         children: badges.map((badge) => iconNode(badge)),
                     }),
                     await ListOfLevelsNode(
-                        topCompletedLevels.slice(0, 4),
+                        profile?.topCompletedLevels.slice(0, 4),
                         'HARDEST COMPLETIONS',
                     ),
                 ],

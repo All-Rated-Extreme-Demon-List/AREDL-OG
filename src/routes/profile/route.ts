@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { userProfileRoute } from '@/routes/profile/user.$userid/route';
+import { userProfileRoute } from '@/routes/profile/user/route';
 import { HonoOGApp } from '@/routes/root';
 
 export function profileRoutes() {
